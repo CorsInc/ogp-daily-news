@@ -183,14 +183,15 @@ def extract_headlines_from_text(text: str) -> list:
 
 
 def escape_md(text: str) -> str:
-    special = set(r'\*_`\[\]()~>#+=|{}!')
+    """Escapa caracteres especiales de MarkdownV2 de Telegram.
+    
+    Los 19 caracteres que Telegram requiere escapar con \\:
+    _ * [ ] ( ) ~ ` > # + - = | { } . !
+    """
+    special_chars = set('_*[]()~`>#+-=|{}.!')
     result = []
     for c in text:
-        if c == '.':
-            result.append('\\.')
-        elif c == '-':
-            result.append('\\-')
-        elif c in special:
+        if c in special_chars:
             result.append('\\' + c)
         else:
             result.append(c)
@@ -218,7 +219,7 @@ def build_summary() -> str:
     lines.append("")
 
     now = datetime.now()
-    lines.append(f"🕐 Generado: {now.strftime('%Y\\-%m\\-%d %H:%M')} AST")
+    lines.append(f"🕐 Generado: {escape_md(now.strftime('%Y-%m-%d %H:%M'))} AST")
     lines.append("Fuentes: END, El Vocero")
 
     return "\n".join(lines)
